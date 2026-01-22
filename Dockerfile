@@ -1,10 +1,12 @@
 # Stage 1: Build the application
-FROM maven:3.8.5-openjdk-17 AS build
+# We use a Maven image that already includes Java 21
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 COPY . .
 RUN mvn clean package -DskipTests
 
 # Stage 2: Run the application
-FROM openjdk:17-jdk-slim
+# We use a lightweight Java 21 runtime
+FROM eclipse-temurin:21-jre-alpine
 COPY --from=build /target/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
